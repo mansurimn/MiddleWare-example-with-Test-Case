@@ -12,11 +12,13 @@ namespace CarService.WebAPI.Controllers
     [Route("api/[controller]")]
     public class CarsController : ControllerBase
     {
+       private string cacheKey="cars";
         private readonly ICarsService _carsService;
-
-        public CarsController(ICarsService carsService)
+        private readonly IMemoryCache _cache;
+        public CarsController(ICarsService carsService,IMemoryCache memoryCache)
         {
             _carsService = carsService;
+            _cache=memoryCache;
         }
 
         [HttpGet("{id}")]
@@ -32,8 +34,19 @@ namespace CarService.WebAPI.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAll([FromQuery] Filters filters)
         {
-            var cars = await _carsService.Get(null, filters);
+          //var cars=new List<cars>;
+          List<car> cars;
+          //bool isExist = await _cache.TryGetValue("cars", out cars); 
+          var cars =  _cache.GetFromCache<IEnumerable<car>>(cacheKey);
 
+          if (cars==null) 
+             {
+             Task.Delay(2000);             
+            var cacheEntryOptions = new MemoryCacheEntryOptions()  
+            .SetSlidingExpiration(TimeSpan.FromDay(1));  
+            cars = await _carsService.Get(null, filters);
+           _cache.Set("cars", currentTime, cacheEntryOptions);  
+           }    
             return Ok(cars);
         }
 
@@ -50,7 +63,11 @@ namespace CarService.WebAPI.Controllers
             var user = (await _carsService.Get(new[] { id }, null)).FirstOrDefault();
             if (user == null)
                 return NotFound();
-
+            var cars =  _cache.GetFromCache<IEnumerable<car>>(cacheKey);
+            if(cars!=null)
+            {
+                //cars.Remove();
+            }
             await _carsService.Delete(user);
             return NoContent();
         }
