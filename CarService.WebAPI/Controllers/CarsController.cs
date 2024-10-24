@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CarService.WebAPI.Data;
 using CarService.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+
 
 namespace CarService.WebAPI.Controllers
 {
@@ -34,19 +36,13 @@ namespace CarService.WebAPI.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAll([FromQuery] Filters filters)
         {
-          //var cars=new List<cars>;
-          List<car> cars;
-          //bool isExist = await _cache.TryGetValue("cars", out cars); 
-          var cars =  _cache.GetFromCache<IEnumerable<car>>(cacheKey);
-
-          if (cars==null) 
-             {
-             Task.Delay(2000);             
-            var cacheEntryOptions = new MemoryCacheEntryOptions()  
-            .SetSlidingExpiration(TimeSpan.FromDay(1));  
-            cars = await _carsService.Get(null, filters);
-           _cache.Set("cars", currentTime, cacheEntryOptions);  
-           }    
+            var cars =  _cache.Get<IEnumerable<Car>>(cacheKey);
+            if (cars==null)
+            {
+                await Task.Delay(2000);
+                cars = await _carsService.Get(null, filters);
+                _cache.Set(cacheKey, cars, DateTimeOffset.Now.AddDays(1));
+            }    
             return Ok(cars);
         }
 
@@ -60,15 +56,17 @@ namespace CarService.WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var user = (await _carsService.Get(new[] { id }, null)).FirstOrDefault();
-            if (user == null)
+            var car = (await _carsService.Get(new[] { id }, null)).FirstOrDefault();
+            if (car == null)
                 return NotFound();
-            var cars =  _cache.GetFromCache<IEnumerable<car>>(cacheKey);
+            var cars =  _cache.Get(cacheKey) as List<Car>;
             if(cars!=null)
             {
-                //cars.Remove();
+                cars.Remove(car);
+                _cache.Remove(cacheKey);
+                _cache.Set(cacheKey, cars, DateTimeOffset.Now.AddDays(1));
             }
-            await _carsService.Delete(user);
+            await _carsService.Delete(car);
             return NoContent();
         }
     }

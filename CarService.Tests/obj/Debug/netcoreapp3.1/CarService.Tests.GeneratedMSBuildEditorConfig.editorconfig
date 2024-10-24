@@ -1,0 +1,3 @@
+is_global = true
+build_property.RootNamespace = CarService.Tests
+build_property.ProjectDir = C:\CodeBase\MiddleWare example with Test Case\CarService.Tests\

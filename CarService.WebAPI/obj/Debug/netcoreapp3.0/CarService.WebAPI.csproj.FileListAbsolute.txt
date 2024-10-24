@@ -1,0 +1,6 @@
+C:\UBS\a3592f9c-2bee-4953-9df2-8ca267670a59\CarService.WebAPI\obj\Debug\netcoreapp3.0\CarService.WebAPI.csproj.AssemblyReference.cache
+C:\UBS\a3592f9c-2bee-4953-9df2-8ca267670a59\CarService.WebAPI\obj\Debug\netcoreapp3.0\CarService.WebAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\UBS\a3592f9c-2bee-4953-9df2-8ca267670a59\CarService.WebAPI\obj\Debug\netcoreapp3.0\CarService.WebAPI.AssemblyInfoInputs.cache
+C:\UBS\a3592f9c-2bee-4953-9df2-8ca267670a59\CarService.WebAPI\obj\Debug\netcoreapp3.0\CarService.WebAPI.AssemblyInfo.cs
+C:\UBS\a3592f9c-2bee-4953-9df2-8ca267670a59\CarService.WebAPI\obj\Debug\netcoreapp3.0\CarService.WebAPI.csproj.CoreCompileInputs.cache
+C:\UBS\a3592f9c-2bee-4953-9df2-8ca267670a59\CarService.WebAPI\obj\Debug\netcoreapp3.0\CarService.WebAPI.MvcApplicationPartsAssemblyInfo.cache
